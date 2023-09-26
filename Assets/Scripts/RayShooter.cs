@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class RayShooter : MonoBehaviour
 {
-    [SerializeField] private Camera camera;
+    [SerializeField] private new Camera camera;
     [SerializeField] private string enemyTag = "Enemy";
     [SerializeField] private int damage = 100;
+    [SerializeField] private GameObject projPrefab;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -20,28 +16,30 @@ public class RayShooter : MonoBehaviour
         checkMouseInput();
     }
     
-    private void OnGUI()
-    {
-        int size = 100;
-        float posX = camera.pixelWidth / 2 - size / 4;
-        float posY = camera.pixelHeight / 2 - size / 2;
-        GUI.Label(new Rect(posX, posY, size, size), "=|=");
-    }
-    
     void checkMouseInput()
     {
-        if(!Input.GetMouseButtonDown(0)) return;
-        
-        var screenCenter = new Vector2(Screen.width/2, Screen.height/2);
-        
-        Ray ray = camera.ScreenPointToRay(screenCenter);
+        if (Input.GetMouseButtonDown(0))
+        {
+            var screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
 
-        RaycastHit hit;
-        
-        if(!Physics.Raycast(ray, out hit)) return;
-        
-        if(!hit.collider.CompareTag(enemyTag)) return;
+            Ray ray = camera.ScreenPointToRay(screenCenter);
 
-        hit.collider.GetComponent<ReactiveTarget>().ReactToHit(damage);
+            RaycastHit hit;
+
+            if (!Physics.Raycast(ray, out hit)) return;
+
+            if (!hit.collider.CompareTag(enemyTag)) return;
+
+            hit.collider.GetComponent<ReactiveTarget>().ReactToHit(damage);
+        } else if (Input.GetMouseButtonDown(1))
+        {
+            var screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
+
+            Ray ray = camera.ScreenPointToRay(screenCenter);
+
+            GameObject proj = Instantiate(projPrefab) as GameObject;
+            proj.transform.position = transform.TransformPoint(Vector3.forward * 1.5f);
+            proj.transform.rotation = transform.rotation;
+        }
     }
 }

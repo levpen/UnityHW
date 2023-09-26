@@ -30,4 +30,5 @@ public class FPSInput : MonoBehaviour
         
         _characterController.Move(movement*Time.deltaTime);
     }
+    
 }
